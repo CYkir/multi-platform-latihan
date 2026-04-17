@@ -6,5 +6,5 @@ from pos_app.models import (
 class TableRestoSerializer(serializers.ModelSerializer):
   class Meta:
     model = TableResto
-    fields = '__all__'
-    # fields = ('id', 'code', 'name', 'capacity', 'table_status', 'status')
+    # fields = '__all__'
+    fields = ('id', 'code', 'name', 'capacity', 'table_status', 'status')
