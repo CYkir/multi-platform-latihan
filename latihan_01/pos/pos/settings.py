@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*ppbwv7t^)9us8)b5=3xbd*k+vcv-s29kcnj=evp7tc2d8t*+s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,8 +39,31 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pos_app',
     'api',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
+    'import_export',
+    'django_filters',
+    # 'django_login'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES' : [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+
+    ],
+     'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.LimitOffsetPagination',
+
+    'DEFAULT_FILTER_BACKENDS' : [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+}
+
 
 # CUSTOMIZE_USER_MODEL 
 # AUTH_USER_MODEL = 'pos_app.User'
