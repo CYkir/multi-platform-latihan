@@ -4,7 +4,7 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 
-admin.site.register(TableResto)
+# admin.site.register(TableResto)
 admin.site.register(StatusModel)
 
 
@@ -14,4 +14,8 @@ class CategoryAdmin(ImportExportModelAdmin):
 
 @admin.register(MenuResto)
 class MenuRestoAdmin(ImportExportModelAdmin):
+  pass
+
+@admin.register(TableResto)
+class TableRestoAdmin(ImportExportModelAdmin):
   pass

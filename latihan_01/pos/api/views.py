@@ -207,10 +207,11 @@ class TableRestoCreate(generics.CreateAPIView):
   queryset = TableResto.objects.all()
   serializer_class = TableRestoSerializer
 
+# ==================================================
 
 # Menu resto View
 class MenuRestoView(generics.ListAPIView):
-  
+
   queryset = MenuResto.objects.all()
   serializer_class = MenuRestoSerializer
 
@@ -228,9 +229,9 @@ class MenuRestoFirterApi(generics.ListAPIView):
   
 # controller menu resti with permision
 class MenuRestoPermissionView(APIView):
-  authentication_classes = [SessionAuthentication, BasicAuthentication]
+  # authentication_classes = [SessionAuthentication, BasicAuthentication]
   # authentication_classes = [TokenAuthentication]
-  permission_classes = [IsAuthenticated]
+  # permission_classes = [IsAuthenticated]
   
   def get(self, request, *args, **kwargs):
       menu_restos = MenuResto.objects.select_related('status').filter(status = StatusModel.objects.first())
