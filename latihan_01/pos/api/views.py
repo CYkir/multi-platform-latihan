@@ -19,7 +19,7 @@ from django.contrib.auth import authenticate
 
 
 #import permission
-# from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -28,7 +28,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class RegisterUserAPIView(APIView):
   serializer_class = RegisterUserSerializer
-  
+  permission_classes = [AllowAny]
+  authentication_classes = []
   def post(self, request, format = None):
       serializer = self.serializer_class(
           data=request.data,
@@ -46,20 +47,21 @@ class RegisterUserAPIView(APIView):
         'status' : status.HTTP_400_BAD_REQUEST,
         'data' : serializer.errors
       }, status=status.HTTP_400_BAD_REQUEST)
-      
-    
+
 # Login User View
 class LoginView(APIView):
   serializer_class = LoginSerializer
-  
+  permission_classes = [AllowAny]
+  authentication_classes = []
+
   def post(self, request):
       serializer = LoginSerializer(data = request.data)
       serializer.is_valid(raise_exception= True)
       user = serializer.validated_data['user']
       django_login(request, user)
-      
+
       token, created = Token.objects.get_or_create(user = user)
-      
+
       return JsonResponse({
         'status' : 200,
         'message' : 'Selamat anda berhasil masuk...',
@@ -77,6 +79,7 @@ class LoginView(APIView):
 # logout controller
 
 class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
@@ -84,10 +87,12 @@ class LogoutView(APIView):
         except:
             pass
 
+        django_logout(request)
+
         return Response({
             "status": 200,
-            "message": "Token berhasil dihapus (logout)"
-        })
+            "message": "Logout berhasil. Token dan session telah dihapus."
+        }, status=status.HTTP_200_OK)
 
 
 
@@ -229,10 +234,14 @@ class MenuRestoFirterApi(generics.ListAPIView):
   
 # controller menu resti with permision
 class MenuRestoPermissionView(APIView):
-  # authentication_classes = [SessionAuthentication, BasicAuthentication]
-  # authentication_classes = [TokenAuthentication]
-  # permission_classes = [IsAuthenticated]
-  
+  authentication_classes = [
+                            TokenAuthentication,
+                            SessionAuthentication,
+                            BasicAuthentication
+                          ]
+  permission_classes = [IsAuthenticated]
+
+
   def get(self, request, *args, **kwargs):
       menu_restos = MenuResto.objects.select_related('status').filter(status = StatusModel.objects.first())
       serializer = MenuRestoSerializer(menu_restos, many = True)
@@ -244,6 +253,9 @@ class MenuRestoPermissionView(APIView):
         'data' : serializer.data
       }
       return Response(response, status=status.HTTP_200_OK)
+
+
+
 
 def get_csrf(request):
     return JsonResponse({
