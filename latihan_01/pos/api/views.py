@@ -75,7 +75,7 @@ class LoginView(APIView):
           'is_watress' : user.userprofile.is_waitress,
         }
       })
-      
+
 # logout controller
 
 class LogoutView(APIView):
@@ -97,6 +97,7 @@ class LogoutView(APIView):
 
 
 class TableRestoListApiView(APIView):
+  permission_classes = [AllowAny]
   def get(self, request, *args, **kwargs):
     table_resto = TableResto.objects.all()
     serializer = TableRestoSerializer(table_resto , many=True)
@@ -122,6 +123,7 @@ class TableRestoListApiView(APIView):
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class TableRestoDetailApiView(APIView):
+  permission_classes = [AllowAny]
   def get_object(self, id):
       try:
         return TableResto.objects.get(id = id)
@@ -206,6 +208,7 @@ class TableRestoDetailApiView(APIView):
 class TableRestoList(generics.ListAPIView):
   queryset = TableResto.objects.all()
   serializer_class = TableRestoSerializer
+  permission_classes = [AllowAny]
 
 # Create data
 class TableRestoCreate(generics.CreateAPIView):
@@ -216,9 +219,11 @@ class TableRestoCreate(generics.CreateAPIView):
 
 # Menu resto View
 class MenuRestoView(generics.ListAPIView):
-
   queryset = MenuResto.objects.all()
   serializer_class = MenuRestoSerializer
+  permission_classes = [AllowAny]
+  
+
 
 # Pagination
 from .pagination import CustomPagination
@@ -227,11 +232,12 @@ class MenuRestoFirterApi(generics.ListAPIView):
   queryset = MenuResto.objects.all()
   serializer_class = MenuRestoSerializer
   pagination_class = CustomPagination
+  permission_classes = [AllowAny]
   # permission_classes = []
   filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
   filterset_fields = ['category__name']
   ordering_fields = ['created_on']
-  
+
 # controller menu resti with permision
 class MenuRestoPermissionView(APIView):
   authentication_classes = [
